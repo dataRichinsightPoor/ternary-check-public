@@ -1,0 +1,56 @@
+name: Verify research prototype
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      external_checks:
+        description: "Run browser suites that contact RCSB and UniProt"
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  numerical-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm ci
+      - run: npm test
+      - run: npm run portable
+      - run: node scripts/distribution-check.mjs
+      - run: python -m pip install -r requirements-test.txt
+      - run: python tests/crosscheck.py
+      - run: python tests/kinetics-crosscheck.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portable-browser-edition
+          path: portable/Ternary-Check.html
+  external-browser-checks:
+    if: github.event_name == 'workflow_dispatch' && inputs.external_checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run portable
+      - run: node tests/browser-qa.mjs
+      - run: node tests/library-qa.mjs
+      - run: TEST_URL="file://$PWD/portable/Ternary-Check.html" node tests/browser-qa.mjs
+      - run: TEST_URL="file://$PWD/portable/Ternary-Check.html" node tests/library-qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-test-receipts
+          path: qa/

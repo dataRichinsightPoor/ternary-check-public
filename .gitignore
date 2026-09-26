@@ -1,0 +1,7 @@
+node_modules/
+dist/
+qa/
+portable/
+release/
+public/LICENSE.txt
+public/THIRD-PARTY-NOTICES.md

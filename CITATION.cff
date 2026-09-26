@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this research prototype, cite the version and the specific assumptions. Software verification is not biological validation."
+title: "Ternary Check"
+type: software
+version: 0.2.4
+license: MIT
+repository-code: "https://github.com/dataRichinsightPoor/ternary-check-public"
+authors:
+  - name: "Data-Rich, Insight-Poor"
+abstract: "A local-first structural audit, conditional PROTAC mechanism workbench, article case library and E3 evidence browser. Experimental observations, database records and illustrative calculations remain separate. The software does not predict cellular efficacy from static structures."
+keywords:
+  - targeted protein degradation
+  - PROTAC
+  - E3 ligase
+  - structural biology
+  - biophysics
+  - scientific software
