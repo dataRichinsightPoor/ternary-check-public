@@ -1,4 +1,5 @@
 import {articles,examples} from './examples.js';
+import packageMetadata from '../package.json';
 import {roles,filterInteractions,parseInteractionTSV,annotationURL,lensValues,UBI_URL,emptyDatabase} from './evidence.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const link=(url,label)=>url?`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`:'';
@@ -17,7 +18,7 @@ export function renderLibrary({heading,navigate,e3}){
  <div class="library-controls"><label>Find a compound, target or recruiter<input id="case-search" value="${esc(search)}" placeholder="Try DCAF16, BACH1, KAT2A, HRZ…"></label><label>Mechanism<select id="case-category"><option value="all">All mechanisms</option>${[...new Set(examples.map(x=>x.category))].map(c=>`<option ${category===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label>Article<select id="case-article"><option value="all">All articles</option>${articles.map(a=>`<option value="${a.id}" ${articleFilter===a.id?'selected':''}>${esc(a.title)}</option>`).join('')}</select></label></div>
  <div class="library-layout"><section class="case-list panel" aria-label="Illustrative cases"><div class="panel-title"><h2>Case library</h2><span id="case-count"></span></div><div id="case-list"></div></section><section id="case-detail" class="case-detail panel" aria-live="polite"></section></div>`;
  $('#coverage-toggle').onclick=()=>$('#coverage').hidden=!$('#coverage').hidden;
- $('#export-library').onclick=()=>download(JSON.stringify({version:'0.2.3',scope:'Retrieved articles, archive drafts and marked primary-paper extensions. Not exhaustive beyond this corpus.',articles,examples},null,2),'ternary-check-article-library.json');
+ $('#export-library').onclick=()=>download(JSON.stringify({version:packageMetadata.version,scope:'Retrieved articles, archive drafts and marked primary-paper extensions. Not exhaustive beyond this corpus.',articles,examples},null,2),'ternary-check-article-library.json');
  const draw=()=>{
   const filtered=examples.filter(x=>(category==='all'||x.category===category)&&(articleFilter==='all'||x.article===articleFilter)&&JSON.stringify(x).toLowerCase().includes(search.toLowerCase()));
   if(!filtered.some(x=>x.id===selection))selection=filtered[0]?.id??null;
